@@ -37,7 +37,7 @@ variable "key_name" {
 variable "dockerhub_username" {
   description = "Docker Hub username where images are pushed"
   type        = string
-  default     = "kaushalpatil205"
+  default     = "kaushal2052devops"
 }
 
 variable "app_name" {

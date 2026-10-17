@@ -15,7 +15,7 @@
 - **Email ID:** patilkaushal89@gmail.com
 - **Assignment Title:** Deploy a Multi-Service Node.js E-commerce Application Using Terraform and Docker
 - **Repository:** [https://github.com/kaushalpatil205/Deploy-a-Multi-Service-Node.js-E-Commerce-Application-Using-Terraform-and-Docker](https://github.com/kaushalpatil205/Deploy-a-Multi-Service-Node.js-E-Commerce-Application-Using-Terraform-and-Docker)
-- **Docker Hub:** [https://hub.docker.com/u/kaushalpatil205](https://hub.docker.com/u/kaushalpatil205)
+- **Docker Hub:** [https://hub.docker.com/u/kaushal2052devops](https://hub.docker.com/u/kaushal2052devops)
 
 ---
 
@@ -37,7 +37,7 @@ graph TD
         direction LR
         Client(("Browser / Client<br>HTTP Traffic")):::client
         TF["Terraform v1.9+<br>IaC Automation"]:::tf
-        Hub[("Docker Hub Registry<br>kaushalpatil205/*")]:::hub
+        Hub[("Docker Hub Registry<br>kaushal2052devops/*")]:::hub
     end
 
     %% ─── AWS Cloud Network & Compute ────────────────────────────────
@@ -100,7 +100,7 @@ flowchart LR
 
     subgraph P2 ["Phase 2: Registry & IaC"]
         direction TB
-        B1["4. Tag & Push to Docker Hub<br>kaushalpatil205/*"]
+        B1["4. Tag & Push to Docker Hub<br>kaushal2052devops/*"]
         B2["5. Write Terraform Manifests<br>VPC, Subnet, IGW, SG, EC2"]
         B3["6. Validate & Preview Plan<br>terraform init & plan"]
         B1 --> B2 --> B3
@@ -302,25 +302,25 @@ curl -I http://localhost:80/
 
 ## 🐳 Step 3: Docker Hub Tagging & Publishing
 
-All images are tagged under the Docker Hub namespace `kaushalpatil205` and pushed to the public registry:
+All images are tagged under the Docker Hub namespace `kaushal2052devops` and pushed to the public registry:
 
 ```bash
 # Authenticate with Docker Hub
-docker login -u kaushalpatil205
+docker login -u kaushal2052devops
 
 # Build and Tag
-docker tag ecommerce-user-service:latest kaushalpatil205/ecommerce-user-service:latest
-docker tag ecommerce-product-service:latest kaushalpatil205/ecommerce-product-service:latest
-docker tag ecommerce-cart-service:latest kaushalpatil205/ecommerce-cart-service:latest
-docker tag ecommerce-order-service:latest kaushalpatil205/ecommerce-order-service:latest
-docker tag ecommerce-frontend:latest kaushalpatil205/ecommerce-frontend:latest
+docker tag ecommerce-user-service:latest kaushal2052devops/ecommerce-user-service:latest
+docker tag ecommerce-product-service:latest kaushal2052devops/ecommerce-product-service:latest
+docker tag ecommerce-cart-service:latest kaushal2052devops/ecommerce-cart-service:latest
+docker tag ecommerce-order-service:latest kaushal2052devops/ecommerce-order-service:latest
+docker tag ecommerce-frontend:latest kaushal2052devops/ecommerce-frontend:latest
 
 # Push Images
-docker push kaushalpatil205/ecommerce-user-service:latest
-docker push kaushalpatil205/ecommerce-product-service:latest
-docker push kaushalpatil205/ecommerce-cart-service:latest
-docker push kaushalpatil205/ecommerce-order-service:latest
-docker push kaushalpatil205/ecommerce-frontend:latest
+docker push kaushal2052devops/ecommerce-user-service:latest
+docker push kaushal2052devops/ecommerce-product-service:latest
+docker push kaushal2052devops/ecommerce-cart-service:latest
+docker push kaushal2052devops/ecommerce-order-service:latest
+docker push kaushal2052devops/ecommerce-frontend:latest
 ```
 
 ---
