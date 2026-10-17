@@ -33,9 +33,12 @@ const Home = () => {
         textAlign: 'center'
       }}>
         <div className="container">
-          <h1 style={{ fontSize: '3rem', marginBottom: '1rem', fontWeight: 'bold' }}>
+          <h1 style={{ fontSize: '3rem', marginBottom: '0.5rem', fontWeight: 'bold' }}>
             Welcome to E-Commerce
           </h1>
+          <div style={{ display: 'inline-block', backgroundColor: 'rgba(255,255,255,0.25)', padding: '0.4rem 1.2rem', borderRadius: '50px', marginBottom: '1.2rem', fontSize: '1.05rem', fontWeight: 'bold', border: '1px solid rgba(255,255,255,0.4)' }}>
+            🟢 Frontend is Live
+          </div>
           <p style={{ fontSize: '1.2rem', marginBottom: '2rem', opacity: 0.9 }}>
             Discover amazing products with our microservices-powered shopping experience
           </p>

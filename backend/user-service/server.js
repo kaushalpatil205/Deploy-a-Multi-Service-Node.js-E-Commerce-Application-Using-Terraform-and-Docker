@@ -16,6 +16,13 @@ app.use(express.json());
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/ecommerce_users', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+})
+.then(() => console.log('Connected to MongoDB (User Service)'))
+.catch(err => console.warn('MongoDB connection warning:', err.message));
+
+// Sample response route
+app.get('/', (req, res) => {
+  res.send('User Service Running');
 });
 
 // Routes
