@@ -122,7 +122,7 @@ flowchart TD
 ## 📑 Table of Contents
 
 1. [Project Overview & Objectives](#-project-overview--objectives)
-2. [Assignment Requirements Checklist](#-assignment-requirements-checklist)
+2. [Assignment Requirements Mapping](#-assignment-requirements-mapping)
 3. [Repository File Structure](#-repository-file-structure)
 4. [Master Execution Command Reference](#-master-execution-command-reference)
 5. [Step-by-Step Evidence & Screenshots](#-step-by-step-evidence--screenshots)
@@ -145,24 +145,24 @@ This project automates the containerization, cloud infrastructure provisioning, 
 
 ---
 
-## ✅ Assignment Requirements Checklist
+## 📋 Assignment Requirements Mapping
 
-| Section | Assignment Requirement | Implementation Detail | Status |
-|---|---|---|:---:|
-| **1. Application Setup** | Dockerfiles for each of the 5 services | Custom multi-stage and optimized Dockerfiles for Frontend, User, Product, Cart, and Order services | ✅ Satisfied |
-| | Each service exposes port & returns sample response | All backend services expose ports 3001-3004 and return `"Service Running"` and `/health` JSON | ✅ Satisfied |
-| | Build and test Docker images locally | Images built for `linux/amd64` and validated with Docker Compose | ✅ Satisfied |
-| | Tag and push images to Docker Hub | All 5 images published under public Docker Hub account `kaushal2052devops` | ✅ Satisfied |
-| **2. Infrastructure** | VPC with at least one public subnet | Custom VPC (`10.0.0.0/16`), Public Subnet (`10.0.1.0/24`), Internet Gateway, and Route Table | ✅ Satisfied |
-| | 1 or more EC2 instances to host containers | EC2 `t3.medium` running Ubuntu 22.04 LTS provisioned via Terraform | ✅ Satisfied |
-| | Security Groups for HTTP & microservice ports | Inbound rules configured for Ports 22, 80, 3000, 3001, 3002, 3003, 3004 | ✅ Satisfied |
-| | Automated Docker installation via user-data | Cloud-init shell script automatically installs Docker Engine 24+ and compose plugin | ✅ Satisfied |
-| | Automated image pull and container execution | Cloud-init pulls all 5 images from Docker Hub and launches them on respective host ports | ✅ Satisfied |
-| **3. Deployment** | Publicly accessible Frontend | Frontend accessible on EC2 Public IP on both Port 80 and Port 3000 | ✅ Satisfied |
-| | Display homepage or "Frontend is Live" | Homepage displays live catalogue and **🟢 Frontend is Live** badge | ✅ Satisfied |
-| | Verify backend containers via API / health | Curl tests confirm `200 OK` on root endpoints and `/health` endpoints | ✅ Satisfied |
-| | Terraform output to print Public IP / DNS | `outputs.tf` exposes `ec2_public_ip`, `ec2_public_dns`, and all service health URLs | ✅ Satisfied |
-| **4. Documentation** | README with architecture & screenshots | Comprehensive README, Mermaid diagrams, clean PDF, and screenshots gallery | ✅ Satisfied |
+| Section | Assignment Requirement | Implementation Detail |
+|---|---|---|
+| **1. Application Setup** | Dockerfiles for each of the 5 services | Custom multi-stage and optimized Dockerfiles for Frontend, User, Product, Cart, and Order services |
+| | Each service exposes port & returns sample response | All backend services expose ports 3001-3004 and return `"Service Running"` and `/health` JSON |
+| | Build and test Docker images locally | Images built for `linux/amd64` and validated with Docker Compose |
+| | Tag and push images to Docker Hub | All 5 images published under public Docker Hub account `kaushal2052devops` |
+| **2. Infrastructure** | VPC with at least one public subnet | Custom VPC (`10.0.0.0/16`), Public Subnet (`10.0.1.0/24`), Internet Gateway, and Route Table |
+| | 1 or more EC2 instances to host containers | EC2 `t3.medium` running Ubuntu 22.04 LTS provisioned via Terraform |
+| | Security Groups for HTTP & microservice ports | Inbound rules configured for Ports 22, 80, 3000, 3001, 3002, 3003, 3004 |
+| | Automated Docker installation via user-data | Cloud-init shell script automatically installs Docker Engine 24+ and compose plugin |
+| | Automated image pull and container execution | Cloud-init pulls all 5 images from Docker Hub and launches them on respective host ports |
+| **3. Deployment** | Publicly accessible Frontend | Frontend accessible on EC2 Public IP on both Port 80 and Port 3000 |
+| | Display homepage or "Frontend is Live" | Homepage displays live catalogue and **🟢 Frontend is Live** badge |
+| | Verify backend containers via API / health | Curl tests confirm `200 OK` on root endpoints and `/health` endpoints |
+| | Terraform output to print Public IP / DNS | `outputs.tf` exposes `ec2_public_ip`, `ec2_public_dns`, and all service health URLs |
+| **4. Documentation** | README with architecture & screenshots | Comprehensive README, Mermaid diagrams, clean PDF, and screenshots gallery |
 
 ---
 
