@@ -4,24 +4,22 @@
 [![Docker](https://img.shields.io/badge/Docker-Engine%2024+-2496ED.svg?logo=docker)](https://www.docker.com/)
 [![AWS](https://img.shields.io/badge/AWS-ap--south--1-FF9900.svg?logo=amazon-aws)](https://aws.amazon.com/)
 [![Node.js](https://img.shields.io/badge/Node.js-18-339933.svg?logo=node.js)](https://nodejs.org/)
-[![Status](https://img.shields.io/badge/Status-Completed%20(50%2F50%20Marks)-success.svg)](#-evaluation-criteria-alignment)
+[![Assessment](https://img.shields.io/badge/DevOps%20Skill%20Test-3-success.svg)](https://herovired.com/)
 
 ---
 
-## 👤 Student & Assessment Information
+## 👤 Candidate & Project Information
 
 - **Student Name:** Kaushal Patil
-- **HeroVired ID:** Kaushal Patil_13408
+- **HeroVired Student ID:** Kaushal Patil_13408
 - **Email ID:** patilkaushal89@gmail.com
 - **Assignment Title:** Deploy a Multi-Service Node.js E-commerce Application Using Terraform and Docker
-- **Repository:** [https://github.com/kaushalpatil205/Deploy-a-Multi-Service-Node.js-E-Commerce-Application-Using-Terraform-and-Docker](https://github.com/kaushalpatil205/Deploy-a-Multi-Service-Node.js-E-Commerce-Application-Using-Terraform-and-Docker)
-- **Docker Hub:** [https://hub.docker.com/u/kaushal2052devops](https://hub.docker.com/u/kaushal2052devops)
+- **GitHub Repository:** [https://github.com/kaushalpatil205/Deploy-a-Multi-Service-Node.js-E-Commerce-Application-Using-Terraform-and-Docker](https://github.com/kaushalpatil205/Deploy-a-Multi-Service-Node.js-E-Commerce-Application-Using-Terraform-and-Docker)
+- **Docker Hub Profile:** [https://hub.docker.com/u/kaushal2052devops](https://hub.docker.com/u/kaushal2052devops)
 
 ---
 
-## 📐 Architecture Diagrams
-
-system architecture and deployment flowchart can be found in the [architecture-diagrams/](https://github.com/kaushalpatil205/Deploy-a-Multi-Service-Node.js-E-Commerce-Application-Using-Terraform-and-Docker/blob/main/architecture-diagrams) folder.
+## 📐 System Architecture Diagram
 
 ```mermaid
 graph TD
@@ -32,7 +30,7 @@ graph TD
     classDef hub      fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000
     classDef tf       fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000
 
-    %% ─── External Layer (Horizontal) ────────────────────────────────
+    %% ─── External Layer ─────────────────────────────────────────────
     subgraph EXT ["External Layer (Clients, IaC & Registry)"]
         direction LR
         Client(("Browser / Client<br>HTTP Traffic")):::client
@@ -76,246 +74,174 @@ graph TD
 
 ---
 
-## 🚀 Deployment Flowchart
+## 🚀 CI/CD & Deployment Flowchart
 
 ```mermaid
-flowchart LR
-    %% ─── Styling Classes ────────────────────────────────────────────
-    classDef startend fill:#e1f5fe,stroke:#0288d1,stroke-width:2px,color:#000
-    classDef check    fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000
-    classDef success  fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000
+flowchart TD
+    classDef dev fill:#e8eaf6,stroke:#3f51b5,stroke-width:2px,color:#000
+    classDef hub fill:#e1f5fe,stroke:#0288d1,stroke-width:2px,color:#000
+    classDef tf  fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000
+    classDef aws fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000
 
-    Start(["Start"]):::startend --> P1
-    
-    subgraph P1 ["Phase 1: App Setup & Dockerization"]
+    subgraph P1 ["Phase 1: Local Containerization"]
         direction TB
-        A1["1. Clone Repo & Add Endpoints<br>GET / & GET /health"]
-        A2["2. Create 5 Dockerfiles<br>Frontend + 4 Microservices"]
-        A3["3. Local Docker Build & Test<br>docker compose up -d"]
+        A1["1. Write Dockerfiles<br>Frontend + 4 Microservices"]:::dev
+        A2["2. Build Local Images<br>linux/amd64 architecture"]:::dev
+        A3["3. Test Locally with Compose<br>docker compose up -d"]:::dev
         A1 --> A2 --> A3
     end
 
-    P1 --> C1{"Local Test<br>Passed?"}:::check
-    C1 -- Yes --> P2
-
-    subgraph P2 ["Phase 2: Registry & IaC"]
+    subgraph P2 ["Phase 2: Registry Publishing & IaC"]
         direction TB
-        B1["4. Tag & Push to Docker Hub<br>kaushal2052devops/*"]
-        B2["5. Write Terraform Manifests<br>VPC, Subnet, IGW, SG, EC2"]
-        B3["6. Validate & Preview Plan<br>terraform init & plan"]
+        B1["4. Tag & Push to Docker Hub<br>kaushal2052devops/*"]:::hub
+        B2["5. Write Terraform Manifests<br>VPC, Subnet, IGW, SG, EC2"]:::tf
+        B3["6. Validate & Preview Plan<br>terraform init & plan"]:::tf
         B1 --> B2 --> B3
     end
 
-    P2 --> P3
-
-    subgraph P3 ["Phase 3: Provision & Deploy"]
+    subgraph P3 ["Phase 3: Automated Provisioning"]
         direction TB
-        D1["7. terraform apply -auto-approve"]
-        D2["8. Cloud-Init User Data<br>Install Docker & Pull Images"]
-        D3["9. Auto-Run 5 Containers<br>Ports: 80, 3000-3004"]
-        D1 --> D2 --> D3
+        C1["7. Execute terraform apply<br>Automated AWS Provisioning"]:::tf
+        C2["8. Cloud-Init User Data<br>Install Docker & Pull Images"]:::aws
+        C3["9. Auto-Run 6 Containers<br>Ports: 80, 3000-3004, 27017"]:::aws
+        C1 --> C2 --> C3
     end
 
-    P3 --> P4
-
-    subgraph P4 ["Phase 4: Verify & Document"]
+    subgraph P4 ["Phase 4: Cloud Verification"]
         direction TB
-        E1["10. Probing & Verification<br>Browser 'Frontend is Live' & curls"]
-        E2["11. Evidence Screenshots<br>12 Verifiable Evidence Captures"]
-        E3["12. Generate PDF & README<br>Clean PDF & GitHub Sync"]
-        E1 --> E2 --> E3
+        D1["10. Test Frontend UI<br>http://&lt;EC2_IP&gt;:3000 (Live Badge)"]:::aws
+        D2["11. Microservice Health Checks<br>curl /health on 3001-3004"]:::aws
+        D1 --> D2
     end
 
-    P4 --> Done(["Assessment Complete (50/50)"]):::success
+    P1 --> P2 --> P3 --> P4
 ```
 
 ---
 
 ## 📑 Table of Contents
 
-1. [Project Overview](#-project-overview)
-2. [Evaluation Criteria Alignment](#-evaluation-criteria-alignment)
+1. [Project Overview & Objectives](#-project-overview--objectives)
+2. [Assignment Requirements Checklist](#-assignment-requirements-checklist)
 3. [Repository File Structure](#-repository-file-structure)
-4. [Step 1: Application Setup & Dockerization](#-step-1-application-setup--dockerization)
-5. [Step 2: Local Testing with Docker Compose](#-step-2-local-testing-with-docker-compose)
-6. [Step 3: Docker Hub Tagging & Publishing](#-step-3-docker-hub-tagging--publishing)
-7. [Step 4: Infrastructure Provisioning with Terraform](#-step-4-infrastructure-provisioning-with-terraform)
-8. [Step 5: Cloud-Init Automated Provisioning](#-step-5-cloud-init-automated-provisioning)
-9. [Step 6: Live Verification & Testing Endpoints](#-step-6-live-verification--testing-endpoints)
-10. [Screenshots Gallery & Evidence](#-screenshots-gallery--evidence)
+4. [Master Execution Command Reference](#-master-execution-command-reference)
+5. [Step-by-Step Evidence & Screenshots](#-step-by-step-evidence--screenshots)
+6. [Cloud Verification & Endpoints Reference](#-cloud-verification--endpoints-reference)
+7. [Infrastructure Teardown & Cleanup](#-infrastructure-teardown--cleanup)
 
 ---
 
-## 🎯 Project Overview
+## 🎯 Project Overview & Objectives
 
-This repository demonstrates the end-to-end containerization and cloud orchestration of a Node.js microservices e-commerce application. The application consists of:
+This project automates the containerization, cloud infrastructure provisioning, and production deployment of a multi-service Node.js e-commerce application on Amazon Web Services (AWS) using **Terraform** and **Docker**.
 
-1. **Frontend:** React-based single-page application served via high-performance Nginx web server on HTTP ports 80 and 3000, displaying the live store homepage and "Frontend is Live" indicator.
+### Architecture Components:
+1. **Frontend:** React-based single-page application served via high-performance Nginx web server on HTTP ports 80 and 3000, displaying the store homepage with a prominent **"🟢 Frontend is Live"** status badge.
 2. **User Service:** Node.js/Express service exposing port 3001, handling authentication and profile logic. Returns `"User Service Running"` on `GET /` and health status on `GET /health`.
 3. **Product Service:** Node.js/Express service exposing port 3002, handling catalog and categories. Returns `"Product Service Running"` on `GET /` and health status on `GET /health`.
 4. **Cart Service:** Node.js/Express service exposing port 3003, managing shopping cart operations. Returns `"Cart Service Running"` on `GET /` and health status on `GET /health`.
 5. **Order Service:** Node.js/Express service exposing port 3004, handling order processing and payments. Returns `"Order Service Running"` on `GET /` and health status on `GET /health`.
-
-The AWS infrastructure is fully automated using **Terraform (v1.9+)**, provisioning an isolated VPC, public subnet, internet gateway, custom security groups, and an Ubuntu 22.04 LTS EC2 instance with automated user-data execution.
+6. **MongoDB Database:** Containerized MongoDB 6.0 instance attached to bridge network `ecommerce-net` with persistent volume storage.
 
 ---
 
-## 📊 Evaluation Criteria Alignment
+## ✅ Assignment Requirements Checklist
 
-| Component | Marks Allocated | Implementation Summary |
-|---|---|---|
-| **Default/Custom VPC, Subnet, and Security Group setup** | **10 Marks** | Automated provisioning of VPC (`10.0.0.0/16`), public subnet (`10.0.1.0/24`), IGW, route table, and security group covering ports 80, 3000, 3001-3004, 22. |
-| **EC2 Provisioning with Docker Setup** | **10 Marks** | EC2 instance (`t3.medium`, Ubuntu 22.04) provisioned with automated installation of Docker Engine 24+ and Docker Compose via cloud-init. |
-| **Docker Container Deployment via user-data/provisioners** | **10 Marks** | Cloud-init user-data script pulls all 5 container images from Docker Hub and launches them on designated host ports with auto-restart. |
-| **Public Access to Frontend** | **10 Marks** | Publicly accessible via EC2 Public IP and DNS on ports 80 and 3000, presenting the store homepage with "Frontend is Live" confirmation. |
-| **Documentation** | **10 Marks** | In-depth README with Mermaid diagrams, comprehensive execution guides, screenshots index, and local PDF submission file. |
-| **Total** | **50 / 50 Marks** | **100% Complete & Verified** |
+| Section | Assignment Requirement | Implementation Detail | Status |
+|---|---|---|:---:|
+| **1. Application Setup** | Dockerfiles for each of the 5 services | Custom multi-stage and optimized Dockerfiles for Frontend, User, Product, Cart, and Order services | ✅ Satisfied |
+| | Each service exposes port & returns sample response | All backend services expose ports 3001-3004 and return `"Service Running"` and `/health` JSON | ✅ Satisfied |
+| | Build and test Docker images locally | Images built for `linux/amd64` and validated with Docker Compose | ✅ Satisfied |
+| | Tag and push images to Docker Hub | All 5 images published under public Docker Hub account `kaushal2052devops` | ✅ Satisfied |
+| **2. Infrastructure** | VPC with at least one public subnet | Custom VPC (`10.0.0.0/16`), Public Subnet (`10.0.1.0/24`), Internet Gateway, and Route Table | ✅ Satisfied |
+| | 1 or more EC2 instances to host containers | EC2 `t3.medium` running Ubuntu 22.04 LTS provisioned via Terraform | ✅ Satisfied |
+| | Security Groups for HTTP & microservice ports | Inbound rules configured for Ports 22, 80, 3000, 3001, 3002, 3003, 3004 | ✅ Satisfied |
+| | Automated Docker installation via user-data | Cloud-init shell script automatically installs Docker Engine 24+ and compose plugin | ✅ Satisfied |
+| | Automated image pull and container execution | Cloud-init pulls all 5 images from Docker Hub and launches them on respective host ports | ✅ Satisfied |
+| **3. Deployment** | Publicly accessible Frontend | Frontend accessible on EC2 Public IP on both Port 80 and Port 3000 | ✅ Satisfied |
+| | Display homepage or "Frontend is Live" | Homepage displays live catalogue and **🟢 Frontend is Live** badge | ✅ Satisfied |
+| | Verify backend containers via API / health | Curl tests confirm `200 OK` on root endpoints and `/health` endpoints | ✅ Satisfied |
+| | Terraform output to print Public IP / DNS | `outputs.tf` exposes `ec2_public_ip`, `ec2_public_dns`, and all service health URLs | ✅ Satisfied |
+| **4. Documentation** | README with architecture & screenshots | Comprehensive README, Mermaid diagrams, clean PDF, and screenshots gallery | ✅ Satisfied |
 
 ---
 
 ## 📂 Repository File Structure
 
 ```text
-E-CommerceStore/
-├── architecture-diagrams/
-│   ├── architecture-diagram.md       # Full Mermaid architecture diagram
-│   └── flowchart.md                  # Complete deployment workflow diagram
-├── backend/
-│   ├── cart-service/
-│   │   ├── models/                   # Cart schema
-│   │   ├── routes/                   # Cart endpoints
-│   │   ├── Dockerfile                # Multi-stage production Dockerfile (Port 3003)
-│   │   ├── package.json              # Service dependencies
-│   │   └── server.js                 # Express server with / and /health
-│   ├── order-service/
-│   │   ├── models/                   # Order schema
-│   │   ├── routes/                   # Orders and payments endpoints
-│   │   ├── Dockerfile                # Multi-stage production Dockerfile (Port 3004)
-│   │   ├── package.json              # Service dependencies
-│   │   └── server.js                 # Express server with / and /health
-│   ├── product-service/
-│   │   ├── models/                   # Product & Category schemas
-│   │   ├── routes/                   # Product endpoints
-│   │   ├── Dockerfile                # Multi-stage production Dockerfile (Port 3002)
-│   │   ├── package.json              # Service dependencies
-│   │   └── server.js                 # Express server with / and /health
-│   └── user-service/
-│       ├── middleware/               # Auth middleware
-│       ├── models/                   # User schema
-│       ├── routes/                   # Users and auth endpoints
-│       ├── Dockerfile                # Multi-stage production Dockerfile (Port 3001)
-│       ├── package.json              # Service dependencies
-│       └── server.js                 # Express server with / and /health
-├── frontend/
-│   ├── public/                       # Static public assets
-│   ├── src/                          # React application source code
-│   │   ├── components/               # Header, ProductCard components
-│   │   ├── pages/                    # Home, Products, Cart, Checkout pages
-│   │   ├── services/                 # Axios API gateway clients
-│   │   └── App.js                    # React routing entry point
-│   ├── Dockerfile                    # Multi-stage build (Node -> Nginx) Ports 80 & 3000
-│   ├── nginx.conf                    # Nginx reverse proxy configuration
-│   └── package.json                  # React dependencies
-├── terraform/
-│   ├── main.tf                       # VPC, Subnet, IGW, SG, and EC2 resources
-│   ├── variables.tf                  # Configurable infrastructure variables
-│   ├── outputs.tf                    # Public IP, DNS, and service endpoint outputs
-│   └── terraform.tfvars              # Deployment parameter values
-├── screenshots/                      # Verifiable step-by-step evidence images
-├── docker-compose.yml                # Local orchestration manifest
-├── LICENSE                           # Project license
-└── README.md                         # Comprehensive documentation (this file)
+.
+├── LICENSE
+├── README.md                                # Comprehensive deployment documentation & screenshots
+├── architecture-diagrams
+│   ├── architecture-diagram.md             # System architecture diagram definition
+│   └── flowchart.md                        # CI/CD deployment flowchart definition
+├── backend
+│   ├── cart-service
+│   │   ├── Dockerfile                      # Cart Service container specification (Port 3003)
+│   │   ├── package.json
+│   │   └── server.js                       # Endpoints: GET /, GET /health, /api/cart
+│   ├── order-service
+│   │   ├── Dockerfile                      # Order Service container specification (Port 3004)
+│   │   ├── package.json
+│   │   └── server.js                       # Endpoints: GET /, GET /health, /api/orders
+│   ├── product-service
+│   │   ├── Dockerfile                      # Product Service container specification (Port 3002)
+│   │   ├── package.json
+│   │   └── server.js                       # Endpoints: GET /, GET /health, /api/products
+│   └── user-service
+│       ├── Dockerfile                      # User Service container specification (Port 3001)
+│       ├── package.json
+│       └── server.js                       # Endpoints: GET /, GET /health, /api/users
+├── docker-compose.yml                       # Multi-container local orchestration & network definition
+├── frontend
+│   ├── Dockerfile                          # Multi-stage React build & Nginx production server
+│   ├── nginx.conf                          # Nginx configuration listening on ports 80 & 3000
+│   ├── package.json
+│   └── src/                                # React frontend source code with "Frontend is Live" badge
+├── screenshots/                            # Evidence captures for all verification stages (01 to 12)
+└── terraform
+    ├── main.tf                             # VPC, Subnet, IGW, Route Table, SG, and EC2 user_data
+    ├── outputs.tf                          # Public IP, URLs, DNS, and Service health outputs
+    ├── terraform.tfvars                    # Configuration variables (Region, CIDRs, Docker Hub user)
+    └── variables.tf                        # Input variable declarations with defaults
 ```
 
 ---
 
-## 🛠️ Step 1: Application Setup & Dockerization
+## 💻 Master Execution Command Reference
 
-Each of the 5 services has an optimized Dockerfile adhering to containerization best practices:
+Here is the complete, chronologically ordered reference of all commands executed to complete the assignment:
 
-### Backend Dockerfiles (User, Product, Cart, Order)
-```dockerfile
-FROM node:18-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm install --production
-COPY . .
-EXPOSE <PORT>
-CMD ["node", "server.js"]
-```
-
-### Frontend Dockerfile (Multi-Stage Build)
-```dockerfile
-# Stage 1: Build React static bundle
-FROM node:18-alpine AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-ENV CI=false
-RUN npm run build
-
-# Stage 2: Serve with lightweight Nginx
-FROM nginx:alpine
-COPY --from=builder /app/build /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-EXPOSE 80
-EXPOSE 3000
-CMD ["nginx", "-g", "daemon off;"]
-```
-
----
-
-## 🧪 Step 2: Local Testing with Docker Compose
-
-To test all 5 services locally before deploying to AWS:
-
+### Phase 1: Local Docker Containerization & Testing
 ```bash
-# Start all containers in detached mode
+# 1. Build all 5 microservice Docker images locally
+docker build -t ecommerce-user-service:latest ./backend/user-service
+docker build -t ecommerce-product-service:latest ./backend/product-service
+docker build -t ecommerce-cart-service:latest ./backend/cart-service
+docker build -t ecommerce-order-service:latest ./backend/order-service
+docker build -t ecommerce-frontend:latest ./frontend
+
+# 2. Verify images built locally
+docker images | grep -E "ecommerce|REPOSITORY"
+
+# 3. Local multi-service testing with Docker Compose
 docker compose up -d
-
-# Verify container status
 docker compose ps
-
-# Test User Service
-curl http://localhost:3001/
-# Expected Output: User Service Running
-
-# Test Product Service
-curl http://localhost:3002/
-# Expected Output: Product Service Running
-
-# Test Cart Service
-curl http://localhost:3003/
-# Expected Output: Cart Service Running
-
-# Test Order Service
-curl http://localhost:3004/
-# Expected Output: Order Service Running
-
-# Test Frontend Web Server
-curl -I http://localhost:80/
-# Expected Output: HTTP/1.1 200 OK
 ```
 
----
-
-## 🐳 Step 3: Docker Hub Tagging & Publishing
-
-All images are tagged under the Docker Hub namespace `kaushal2052devops` and pushed to the public registry:
-
+### Phase 2: Docker Hub Registry Tagging & Publishing
 ```bash
-# Authenticate with Docker Hub
+# 1. Authenticate with Docker Hub
 docker login -u kaushal2052devops
 
-# Build and Tag
+# 2. Tag images under Docker Hub namespace
 docker tag ecommerce-user-service:latest kaushal2052devops/ecommerce-user-service:latest
 docker tag ecommerce-product-service:latest kaushal2052devops/ecommerce-product-service:latest
 docker tag ecommerce-cart-service:latest kaushal2052devops/ecommerce-cart-service:latest
 docker tag ecommerce-order-service:latest kaushal2052devops/ecommerce-order-service:latest
 docker tag ecommerce-frontend:latest kaushal2052devops/ecommerce-frontend:latest
 
-# Push Images
+# 3. Push images with cross-platform linux/amd64 compatibility
 docker push kaushal2052devops/ecommerce-user-service:latest
 docker push kaushal2052devops/ecommerce-product-service:latest
 docker push kaushal2052devops/ecommerce-cart-service:latest
@@ -323,129 +249,202 @@ docker push kaushal2052devops/ecommerce-order-service:latest
 docker push kaushal2052devops/ecommerce-frontend:latest
 ```
 
----
-
-## ☁️ Step 4: Infrastructure Provisioning with Terraform
-
-The infrastructure is provisioned reproducibly using Terraform:
-
+### Phase 3: Terraform Cloud Provisioning
 ```bash
 cd terraform
 
-# 1. Initialize backend and providers
+# 1. Initialize Terraform and install AWS provider
 terraform init
 
-# 2. Validate configuration
+# 2. Validate configuration syntax
 terraform validate
 
 # 3. Preview execution plan
 terraform plan
 
-# 4. Provision infrastructure
+# 4. Provision infrastructure on AWS
 terraform apply -auto-approve
 
-# 5. Review outputs
+# 5. Review output variables
 terraform output
 ```
 
-### Terraform Outputs Example
-```text
-ec2_instance_id         = "i-09ab12cd34ef5678"
-ec2_public_dns          = "ec2-13-233-12-34.ap-south-1.compute.amazonaws.com"
-ec2_public_ip           = "13.233.12.34"
-frontend_url_port_80    = "http://13.233.12.34:80"
-frontend_url_port_3000  = "http://13.233.12.34:3000"
-user_service_url        = "http://13.233.12.34:3001"
-user_service_health     = "http://13.233.12.34:3001/health"
-product_service_url     = "http://13.233.12.34:3002"
-product_service_health  = "http://13.233.12.34:3002/health"
-cart_service_url        = "http://13.233.12.34:3003"
-cart_service_health     = "http://13.233.12.34:3003/health"
-order_service_url       = "http://13.233.12.34:3004"
-order_service_health    = "http://13.233.12.34:3004/health"
-public_subnet_id        = "subnet-0abc1234def5678"
-security_group_id       = "sg-0123456789abcdef"
-vpc_id                  = "vpc-0a1b2c3d4e5f6g7h"
+### Phase 4: Cloud Verification & Health Checks
+```bash
+EC2_IP="3.111.246.40"
+
+# 1. Frontend Web Access Verification
+curl -I http://$EC2_IP:80
+curl -I http://$EC2_IP:3000
+
+# 2. Backend Microservice Root Endpoints (GET /)
+curl http://$EC2_IP:3001/ && echo ""
+curl http://$EC2_IP:3002/ && echo ""
+curl http://$EC2_IP:3003/ && echo ""
+curl http://$EC2_IP:3004/ && echo ""
+
+# 3. Backend Microservice Health Endpoints (GET /health)
+curl http://$EC2_IP:3001/health && echo ""
+curl http://$EC2_IP:3002/health && echo ""
+curl http://$EC2_IP:3003/health && echo ""
+curl http://$EC2_IP:3004/health && echo ""
 ```
 
 ---
 
-## ⚡ Step 5: Cloud-Init Automated Provisioning
+## 📸 Step-by-Step Evidence & Screenshots
 
-Upon EC2 instance launch, AWS executes the automated `user_data` script defined in `terraform/main.tf`:
-
-1. Installs Docker Engine, CLI, and Containerd.
-2. Creates an isolated bridge network `ecommerce-net`.
-3. Creates a 2GB swapfile to prevent out-of-memory events during high concurrency.
-4. Starts a persistent MongoDB container on port 27017.
-5. Pulls all 5 Docker images from Docker Hub.
-6. Launches all 5 containers with `--restart always` policy on their respective ports.
-7. Logs deployment progress to `/var/log/ecommerce_deployment.log`.
+All screenshots below are full, uncropped captures stored directly in the [`screenshots/`](screenshots/) directory:
 
 ---
 
-## 🔍 Step 6: Live Verification & Testing Endpoints
+### 📸 Screenshot 01: Local Docker Images Build Verification
+![01-docker-builds.png](screenshots/01-docker-builds.png)
 
-Once the EC2 instance is running, test each endpoint using `curl`:
+> **Explanation & Assignment Evidence:**
+> This screenshot confirms fulfillment of **Requirement 1 ("Build and test the Docker images locally")**.
+> Running `docker images | grep -E "ecommerce|REPOSITORY"` verifies that all 5 required container images (`ecommerce-frontend`, `ecommerce-user-service`, `ecommerce-product-service`, `ecommerce-cart-service`, and `ecommerce-order-service`) have been successfully built locally with appropriate image IDs and size allocations.
+
+---
+
+### 📸 Screenshot 02: Docker Hub Repositories Published
+![02-dockerhub-repositories.png](screenshots/02-dockerhub-repositories.png)
+
+> **Explanation & Assignment Evidence:**
+> This screenshot demonstrates fulfillment of **Requirement 1 ("Tag and push the images to Docker Hub")**.
+> It displays the public Docker Hub dashboard under the candidate's account **`kaushal2052devops`**, verifying that all 5 repositories (`ecommerce-frontend`, `ecommerce-user-service`, `ecommerce-product-service`, `ecommerce-cart-service`, and `ecommerce-order-service`) are published, public, and tagged with `latest`.
+
+---
+
+### 📸 Screenshot 03: Project & Terraform Code Structure
+![03-terraform-code-structure.png](screenshots/03-terraform-code-structure.png)
+
+> **Explanation & Assignment Evidence:**
+> This screenshot proves compliance with the assignment's directory organization and code standards.
+> It displays the complete repository tree showing structured folders for `backend/` microservices, `frontend/` application, `architecture-diagrams/`, and `terraform/` manifests (`main.tf`, `variables.tf`, `outputs.tf`, `terraform.tfvars`).
+
+---
+
+### 📸 Screenshot 04: Terraform Initialization & Validation
+![04-terraform-init-validate.png](screenshots/04-terraform-init-validate.png)
+
+> **Explanation & Assignment Evidence:**
+> This screenshot fulfills **Requirement 2 ("Infrastructure Provisioning with Terraform")**.
+> It displays the terminal execution of `terraform init` and `terraform validate`. HashiCorp AWS provider v5.82+ is successfully installed, backend initialized, and `terraform validate` returns `Success! The configuration is valid.` with zero syntax errors.
+
+---
+
+### 📸 Screenshot 05: Terraform Execution Plan
+![05-terraform-plan.png](screenshots/05-terraform-plan.png)
+
+> **Explanation & Assignment Evidence:**
+> This screenshot verifies the declarative execution plan generated by `terraform plan`.
+> It details the 7 cloud resources to be added (Custom VPC, Public Subnet, Internet Gateway, Route Table, Route Association, Security Group with all inbound rules, and the EC2 Instance). The plan summary confirms `Plan: 7 to add, 0 to change, 0 to destroy`.
+
+---
+
+### 📸 Screenshot 06: Terraform Apply & Output Variables
+![06-terraform-apply.png](screenshots/06-terraform-apply.png)
+
+> **Explanation & Assignment Evidence:**
+> This screenshot fulfills **Requirement 2 & Requirement 3 ("Use Terraform output to print the public IP or DNS of the application")**.
+> It shows the completion of `terraform apply -auto-approve` (`Apply complete! Resources: 7 added, 0 changed, 0 destroyed.`) and displays all output variables including `ec2_public_ip = "3.111.246.40"`, frontend URLs on ports 80 and 3000, and individual microservice health URLs on ports 3001 through 3004.
+
+---
+
+### 📸 Screenshot 07: AWS Management Console — VPC & Public Subnet
+![07-aws-vpc-subnet.png](screenshots/07-aws-vpc-subnet.png)
+
+> **Explanation & Assignment Evidence:**
+> This screenshot verifies fulfillment of **Requirement 2 ("VPC with at least one public subnet")**.
+> Captured directly from the AWS VPC Console in `ap-south-1` (Mumbai), it shows the custom VPC `ecommerce-store-vpc` (`vpc-0a9ae2b2f3966c302`) with CIDR block `10.0.0.0/16` and the associated public subnet `ecommerce-store-public-subnet` (`subnet-01640a2116ca655a6`).
+
+---
+
+### 📸 Screenshot 08: AWS Management Console — Security Group Inbound Rules
+![08-aws-security-group.png](screenshots/08-aws-security-group.png)
+
+> **Explanation & Assignment Evidence:**
+> This screenshot verifies fulfillment of **Requirement 2 ("Security Groups to allow inbound HTTP port 80 or 3000, and internal communication between services 3001-3004")**.
+> It displays security group `ecommerce-store-security-group` (`sg-0b965ed8ec3eb16ee`) with all inbound rules clearly active: Port 22 (SSH), Port 80 (HTTP), Port 3000 (React Frontend), Port 3001 (User Service), Port 3002 (Product Service), Port 3003 (Cart Service), and Port 3004 (Order Service).
+
+---
+
+### 📸 Screenshot 09: AWS Management Console — EC2 Instance Running
+![09-aws-ec2-running.png](screenshots/09-aws-ec2-running.png)
+
+> **Explanation & Assignment Evidence:**
+> This screenshot verifies fulfillment of **Requirement 2 ("1 or more EC2 Instances to host the Docker containers")**.
+> Captured from the AWS EC2 Console, it confirms that instance `i-033143085a75995a8` (`ecommerce-store-server`) is in **Running** state, instance type `t3.medium`, hosted within the custom VPC and subnet, with Public IPv4 address **`3.111.246.40`** assigned.
+
+---
+
+### 📸 Screenshot 10: Docker Containers Running on EC2
+![10-ec2-docker-containers.png](screenshots/10-ec2-docker-containers.png)
+
+> **Explanation & Assignment Evidence:**
+> This screenshot fulfills **Requirement 2 ("Install Docker on EC2, Pull all 5 images from Docker Hub, Run containers on proper ports")**.
+> The terminal output of `docker ps` verifies that all 6 containers (`frontend`, `user-service`, `product-service`, `cart-service`, `order-service`, and `mongodb`) are active in **Up** status with their respective host port bindings properly mapped.
+
+---
+
+### 📸 Screenshot 11: Live Frontend Application in Browser
+![11-frontend-browser-live.png](screenshots/11-frontend-browser-live.png)
+
+> **Explanation & Assignment Evidence:**
+> This screenshot fulfills **Requirement 3 ("Ensure the frontend service is publicly accessible & Display a homepage or 'Frontend is Live' message")**.
+> Captured in a web browser visiting `http://3.111.246.40:3000`, the full browser window displays the live E-Commerce store homepage, categories, products, and the prominent green badge: **🟢 Frontend is Live**.
+
+---
+
+### 📸 Screenshot 12: Backend Microservices Health Checks
+![12-backend-healthchecks.png](screenshots/12-backend-healthchecks.png)
+
+> **Explanation & Assignment Evidence:**
+> This screenshot fulfills **Requirement 1 & Requirement 3 ("Verify backend containers are running via sample responses or health status")**.
+> It captures the terminal running `curl` commands against the live EC2 public IP (`3.111.246.40`) for all 4 microservices, returning HTTP 200 OK responses:
+> - User Service: `User Service Running` & `{"service":"User Service","status":"OK","port":"3001"}`
+> - Product Service: `Product Service Running` & `{"service":"Product Service","status":"OK","port":"3002"}`
+> - Cart Service: `Cart Service Running` & `{"service":"Cart Service","status":"OK","port":"3003"}`
+> - Order Service: `Order Service Running` & `{"service":"Order Service","status":"OK","port":"3004"}`
+
+---
+
+## 🌐 Cloud Verification & Endpoints Reference
+
+| Service Name | Container Name | Host Port | Cloud URL (Live) | Health Check Endpoint |
+|---|---|:---:|---|---|
+| **Frontend Web** | `frontend` | `80` & `3000` | [http://3.111.246.40:3000](http://3.111.246.40:3000) | `GET /` (Status: 200 OK) |
+| **User Service** | `user-service` | `3001` | `http://3.111.246.40:3001` | [http://3.111.246.40:3001/health](http://3.111.246.40:3001/health) |
+| **Product Service** | `product-service` | `3002` | `http://3.111.246.40:3002` | [http://3.111.246.40:3002/health](http://3.111.246.40:3002/health) |
+| **Cart Service** | `cart-service` | `3003` | `http://3.111.246.40:3003` | [http://3.111.246.40:3003/health](http://3.111.246.40:3003/health) |
+| **Order Service** | `order-service` | `3004` | `http://3.111.246.40:3004` | [http://3.111.246.40:3004/health](http://3.111.246.40:3004/health) |
+| **MongoDB** | `ecommerce-mongodb` | `27017` | `mongodb://3.111.246.40:27017` | Internal Docker Network |
+
+---
+
+## 🧹 Infrastructure Teardown & Resource Deletion
+
+To completely delete and tear down all AWS cloud resources created during this project (VPC, Subnet, Internet Gateway, Route Table, Security Group, and EC2 instance) to avoid ongoing AWS charges, execute the following command:
 
 ```bash
-# 1. Frontend Web (Port 80 and 3000)
-curl -I http://<EC2_PUBLIC_IP>:80
-curl -I http://<EC2_PUBLIC_IP>:3000
+cd "/Users/Vraj/Downloads/Herovired Material/Skill test 3 Task/Deploy-a-Multi-Service-Node.js-E-Commerce-Application-Using-Terraform-and-Docker/terraform"
 
-# 2. User Service (Port 3001)
-curl http://<EC2_PUBLIC_IP>:3001/
-# Returns: User Service Running
-curl http://<EC2_PUBLIC_IP>:3001/health
-# Returns: {"service":"User Service","status":"OK","port":3001}
-
-# 3. Product Service (Port 3002)
-curl http://<EC2_PUBLIC_IP>:3002/
-# Returns: Product Service Running
-curl http://<EC2_PUBLIC_IP>:3002/health
-# Returns: {"service":"Product Service","status":"OK","port":3002}
-
-# 4. Cart Service (Port 3003)
-curl http://<EC2_PUBLIC_IP>:3003/
-# Returns: Cart Service Running
-curl http://<EC2_PUBLIC_IP>:3003/health
-# Returns: {"service":"Cart Service","status":"OK","port":3003}
-
-# 5. Order Service (Port 3004)
-curl http://<EC2_PUBLIC_IP>:3004/
-# Returns: Order Service Running
-curl http://<EC2_PUBLIC_IP>:3004/health
-# Returns: {"service":"Order Service","status":"OK","port":3004}
-```
-
----
-
-## 📸 Screenshots Gallery & Evidence
-
-All evidence screenshots are stored in the [screenshots/](screenshots/) folder:
-
-| # | Screenshot Filename | Description & Verification Evidence |
-|---|---|---|
-| **01** | `01-docker-builds.png` | Successful local Docker build of all 5 images (`docker images`). |
-| **02** | `02-dockerhub-repositories.png` | Public Docker Hub repositories showing all 5 images tagged and pushed. |
-| **03** | `03-terraform-code-structure.png` | Terraform manifests directory structure (`main.tf`, `variables.tf`, etc.). |
-| **04** | `04-terraform-init-validate.png` | Terminal output of `terraform init` and `terraform validate` passing. |
-| **05** | `05-terraform-plan.png` | `terraform plan` execution previewing all 8 AWS resources to be created. |
-| **06** | `06-terraform-apply.png` | `terraform apply -auto-approve` completion and output variables. |
-| **07** | `07-aws-vpc-subnet.png` | AWS Management Console displaying custom VPC (`10.0.0.0/16`) and public subnet. |
-| **08** | `08-aws-security-group.png` | AWS Console showing Security Group inbound rules (80, 3000, 3001-3004, 22). |
-| **09** | `09-aws-ec2-running.png` | AWS Console showing EC2 instance in Running state with Public IPv4 assigned. |
-| **10** | `10-ec2-docker-containers.png` | Terminal output of `docker ps` on EC2 showing all 5 containers active. |
-| **11** | `11-frontend-browser-live.png` | Browser opening `http://<EC2-IP>:80` showing "Frontend is Live" and store UI. |
-| **12** | `12-backend-healthchecks.png` | Terminal `curl` outputs verifying sample responses and health endpoints for all backend services. |
-
----
-
-## 🧹 Infrastructure Teardown
-
-To destroy the provisioned cloud infrastructure when evaluation is completed:
-
-```bash
-cd terraform
+# Command to delete all AWS resources
 terraform destroy -auto-approve
+```
+
+### Expected Teardown Output:
+```text
+aws_route_table_association.ecommerce_public_assoc: Destroying...
+aws_instance.ecommerce_server: Destroying...
+aws_instance.ecommerce_server: Destruction complete after 30s
+aws_security_group.ecommerce_sg: Destroying...
+aws_route_table.ecommerce_public_rt: Destroying...
+aws_internet_gateway.ecommerce_igw: Destroying...
+aws_subnet.ecommerce_public_subnet: Destroying...
+aws_vpc.ecommerce_vpc: Destroying...
+aws_vpc.ecommerce_vpc: Destruction complete after 2s
+
+Destroy complete! Resources: 7 destroyed.
 ```
