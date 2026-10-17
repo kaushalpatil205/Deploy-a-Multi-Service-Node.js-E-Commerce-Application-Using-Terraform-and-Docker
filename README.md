@@ -14,16 +14,16 @@
 - **HeroVired ID:** Kaushal Patil_13408
 - **Email ID:** patilkaushal89@gmail.com
 - **Assignment Title:** Deploy a Multi-Service Node.js E-commerce Application Using Terraform and Docker
-- **Repository:** [https://github.com/kaushalpatil205/E-CommerceStore](https://github.com/kaushalpatil205/E-CommerceStore)
+- **Repository:** [https://github.com/kaushalpatil205/Deploy-a-Multi-Service-Node.js-E-Commerce-Application-Using-Terraform-and-Docker](https://github.com/kaushalpatil205/Deploy-a-Multi-Service-Node.js-E-Commerce-Application-Using-Terraform-and-Docker)
 - **Docker Hub:** [https://hub.docker.com/u/kaushalpatil205](https://hub.docker.com/u/kaushalpatil205)
 
 ---
 
 ## 📐 Architecture Diagrams
 
-system architecture and deployment flowchart can be found in the [architecture-diagrams/](https://github.com/kaushalpatil205/E-CommerceStore/blob/main/architecture-diagrams) folder:
-[System Architecture Diagram](https://github.com/kaushalpatil205/E-CommerceStore/blob/main/architecture-diagrams/architecture-diagram.md)
-[Deployment Flowchart](https://github.com/kaushalpatil205/E-CommerceStore/blob/main/architecture-diagrams/flowchart.md)
+system architecture and deployment flowchart can be found in the [architecture-diagrams/](https://github.com/kaushalpatil205/Deploy-a-Multi-Service-Node.js-E-Commerce-Application-Using-Terraform-and-Docker/blob/main/architecture-diagrams) folder:
+[System Architecture Diagram](https://github.com/kaushalpatil205/Deploy-a-Multi-Service-Node.js-E-Commerce-Application-Using-Terraform-and-Docker/blob/main/architecture-diagrams/architecture-diagram.md)
+[Deployment Flowchart](https://github.com/kaushalpatil205/Deploy-a-Multi-Service-Node.js-E-Commerce-Application-Using-Terraform-and-Docker/blob/main/architecture-diagrams/flowchart.md)
 
 ```mermaid
 graph TD
