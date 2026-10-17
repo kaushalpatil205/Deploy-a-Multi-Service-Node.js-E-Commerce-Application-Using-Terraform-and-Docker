@@ -21,108 +21,57 @@
 
 ## 📐 Architecture Diagrams
 
-system architecture and deployment flowchart can be found in the [architecture-diagrams/](https://github.com/kaushalpatil205/Deploy-a-Multi-Service-Node.js-E-Commerce-Application-Using-Terraform-and-Docker/blob/main/architecture-diagrams) folder:
-[System Architecture Diagram](https://github.com/kaushalpatil205/Deploy-a-Multi-Service-Node.js-E-Commerce-Application-Using-Terraform-and-Docker/blob/main/architecture-diagrams/architecture-diagram.md)
-[Deployment Flowchart](https://github.com/kaushalpatil205/Deploy-a-Multi-Service-Node.js-E-Commerce-Application-Using-Terraform-and-Docker/blob/main/architecture-diagrams/flowchart.md)
+system architecture and deployment flowchart can be found in the [architecture-diagrams/](https://github.com/kaushalpatil205/Deploy-a-Multi-Service-Node.js-E-Commerce-Application-Using-Terraform-and-Docker/blob/main/architecture-diagrams) folder.
 
 ```mermaid
 graph TD
     %% ─── Styling Classes ────────────────────────────────────────────
     classDef client   fill:#e1f5fe,stroke:#0288d1,stroke-width:2px,color:#000
     classDef igw      fill:#fff9c4,stroke:#f9a825,stroke-width:2px,color:#000
-    classDef vpc      fill:#e8eaf6,stroke:#3f51b5,stroke-width:2px,color:#000
-    classDef subnet   fill:#ede7f6,stroke:#512da8,stroke-width:2px,color:#000
-    classDef sg       fill:#fce4ec,stroke:#c2185b,stroke-width:2px,color:#000
-    classDef ec2      fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000
-    classDef docker   fill:#e0f2f1,stroke:#00796b,stroke-width:2px,color:#000
-    classDef service  fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000
+    classDef svc      fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000
     classDef hub      fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#000
     classDef tf       fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000
 
-    %% ─── External Users & Registries ────────────────────────────────
-    Client(("Web User / Browser<br>(HTTP Traffic)")):::client
-    Dev(("DevOps Engineer<br>(Terraform & Git)")):::client
-    DockerHub[("Docker Hub Registry<br>kaushalpatil205/*<br>• ecommerce-frontend<br>• ecommerce-user-service<br>• ecommerce-product-service<br>• ecommerce-cart-service<br>• ecommerce-order-service")]:::hub
-
-    %% ─── Terraform Automation ───────────────────────────────────────
-    subgraph IAC ["Terraform Infrastructure as Code"]
-        TF_CLI["Terraform v1.9+<br>main.tf | variables.tf | outputs.tf<br>terraform apply"]:::tf
+    %% ─── External Layer (Horizontal) ────────────────────────────────
+    subgraph EXT ["External Layer (Clients, IaC & Registry)"]
+        direction LR
+        Client(("Browser / Client<br>HTTP Traffic")):::client
+        TF["Terraform v1.9+<br>IaC Automation"]:::tf
+        Hub[("Docker Hub Registry<br>kaushalpatil205/*")]:::hub
     end
 
-    %% ─── AWS Cloud Infrastructure ───────────────────────────────────
-    subgraph AWS ["AWS Cloud Region: ap-south-1 (Mumbai)"]
+    %% ─── AWS Cloud Network & Compute ────────────────────────────────
+    subgraph AWS ["AWS Cloud (ap-south-1) — VPC 10.0.0.0/16 | Public Subnet 10.0.1.0/24 | SG: 80, 3000-3004, 22"]
         direction TB
+        IGW["AWS Internet Gateway (ecommerce-igw)"]:::igw
 
-        %% Internet Gateway
-        IGW["AWS Internet Gateway<br>(ecommerce-igw)"]:::igw
-
-        %% VPC Boundary
-        subgraph VPC ["VPC: 10.0.0.0/16 (ecommerce-vpc)"]
+        subgraph EC2 ["EC2 Host: t3.medium (Ubuntu 22.04) — Docker Engine"]
             direction TB
+            FE["Frontend Container: React + Nginx<br>Ports 80 & 3000 | 'Frontend is Live'"]:::svc
 
-            %% Public Subnet
-            subgraph SUBNET ["Public Subnet: 10.0.1.0/24 (ap-south-1a)"]
-                direction TB
-
-                %% Security Group Boundary
-                subgraph SG ["Security Group: ecommerce-sg"]
-                    direction TB
-                    SG_RULES["Inbound Rules:<br>• TCP 80 & 3000 (Frontend Web)<br>• TCP 3001 (User Service)<br>• TCP 3002 (Product Service)<br>• TCP 3003 (Cart Service)<br>• TCP 3004 (Order Service)<br>• TCP 22 (SSH Admin)<br>• Internal All (Self SG)"]:::sg
-
-                    %% EC2 Instance Boundary
-                    subgraph EC2 ["AWS EC2 Instance: t3.medium (Ubuntu 22.04 LTS)"]
-                        direction TB
-                        HOST_INFO["Host Public IP / DNS<br>Docker Engine 24+ & Docker Compose"]:::ec2
-
-                        %% Docker Network Boundary
-                        subgraph DOCKER_NET ["Docker Bridge Network (ecommerce-net)"]
-                            direction LR
-
-                            %% Frontend Container
-                            FE["Container: frontend<br>Port 80 / 3000:80<br>React + Nginx<br>Status: 'Frontend is Live'"]:::service
-
-                            %% Microservices Containers
-                            US["Container: user-service<br>Port 3001:3001<br>Node.js / Express<br>'User Service Running'"]:::service
-
-                            PS["Container: product-service<br>Port 3002:3002<br>Node.js / Express<br>'Product Service Running'"]:::service
-
-                            CS["Container: cart-service<br>Port 3003:3003<br>Node.js / Express<br>'Cart Service Running'"]:::service
-
-                            OS["Container: order-service<br>Port 3004:3004<br>Node.js / Express<br>'Order Service Running'"]:::service
-
-                            DB[("Container: mongodb<br>Port 27017:27017<br>Mongo 6 Database<br>Data Persistence")]:::docker
-                        end
-                    end
-                end
+            subgraph MICRO ["Backend Microservices (Bridge Network: ecommerce-net)"]
+                direction LR
+                US["User Service<br>:3001"]:::svc
+                PS["Product Service<br>:3002"]:::svc
+                CS["Cart Service<br>:3003"]:::svc
+                OS["Order Service<br>:3004"]:::svc
+                DB[("MongoDB 6<br>:27017")]:::client
             end
         end
     end
 
-    %% ─── Traffic Flows & Dependencies ───────────────────────────────
-    Dev ==>|"1. terraform apply"| TF_CLI
-    TF_CLI ==>|"Provisions VPC, Subnet, IGW, SG, EC2"| AWS
-    TF_CLI -.->|"User-Data pulls images"| DockerHub
-
-    Client -->|"HTTP GET :80 / :3000"| IGW
-    Client -->|"API GET :3001 - :3004"| IGW
-    IGW --> SG_RULES
-    SG_RULES --> FE
-    SG_RULES --> US
-    SG_RULES --> PS
-    SG_RULES --> CS
-    SG_RULES --> OS
-
-    FE -.->|"Proxy / Direct API"| US
-    FE -.->|"Proxy / Direct API"| PS
-    FE -.->|"Proxy / Direct API"| CS
-    FE -.->|"Proxy / Direct API"| OS
-
-    US -->|"Mongoose URI"| DB
-    PS -->|"Mongoose URI"| DB
-    CS -->|"Mongoose URI"| DB
-    OS -->|"Mongoose URI"| DB
-
-    DockerHub ==>|"Pulls 5 Images"| EC2
+    %% ─── Connections ────────────────────────────────────────────────
+    Client -->|"HTTP :80 / :3000"| IGW
+    Client -->|"API :3001-:3004"| IGW
+    TF ==>|"terraform apply"| AWS
+    Hub -.->|"Pulls 5 Images"| EC2
+    IGW --> FE
+    IGW --> MICRO
+    FE -.->|"Internal API Proxy"| MICRO
+    US --> DB
+    PS --> DB
+    CS --> DB
+    OS --> DB
 ```
 
 ---
@@ -130,46 +79,54 @@ graph TD
 ## 🚀 Deployment Flowchart
 
 ```mermaid
-flowchart TD
+flowchart LR
     %% ─── Styling Classes ────────────────────────────────────────────
     classDef startend fill:#e1f5fe,stroke:#0288d1,stroke-width:2px,color:#000
-    classDef step     fill:#ffffff,stroke:#3f51b5,stroke-width:2px,color:#000
-    classDef action   fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000
     classDef check    fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000
     classDef success  fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000
 
-    %% ─── Workflow Steps ─────────────────────────────────────────────
-    Start(["Start Assignment"]):::startend --> Step1["Step 1: Clone Repository & Review Multi-Service Architecture"]:::step
+    Start(["Start"]):::startend --> P1
+    
+    subgraph P1 ["Phase 1: App Setup & Dockerization"]
+        direction TB
+        A1["1. Clone Repo & Add Endpoints<br>GET / & GET /health"]
+        A2["2. Create 5 Dockerfiles<br>Frontend + 4 Microservices"]
+        A3["3. Local Docker Build & Test<br>docker compose up -d"]
+        A1 --> A2 --> A3
+    end
 
-    Step1 --> Step2["Step 2: Create Dockerfiles for All 5 Services<br>• frontend (Port 80/3000)<br>• user-service (Port 3001)<br>• product-service (Port 3002)<br>• cart-service (Port 3003)<br>• order-service (Port 3004)"]:::step
+    P1 --> C1{"Local Test<br>Passed?"}:::check
+    C1 -- Yes --> P2
 
-    Step2 --> Step3["Step 3: Implement Sample Endpoints & Healthchecks<br>• GET / -> 'Service Running'<br>• GET /health -> Status JSON"]:::step
+    subgraph P2 ["Phase 2: Registry & IaC"]
+        direction TB
+        B1["4. Tag & Push to Docker Hub<br>kaushalpatil205/*"]
+        B2["5. Write Terraform Manifests<br>VPC, Subnet, IGW, SG, EC2"]
+        B3["6. Validate & Preview Plan<br>terraform init & plan"]
+        B1 --> B2 --> B3
+    end
 
-    Step3 --> Step4["Step 4: Local Docker Build & Verification<br>• docker build -t image:tag<br>• docker run / docker-compose up -d"]:::step
+    P2 --> P3
 
-    Step4 --> Check1{"Are all 5 services<br>running locally?"}:::check
-    Check1 -- No --> Fix1["Debug Container Logs<br>docker logs <container>"]:::action
-    Fix1 --> Step4
-    Check1 -- Yes --> Step5["Step 5: Tag & Push Images to Docker Hub<br>• docker tag image kaushalpatil205/image:latest<br>• docker push kaushalpatil205/image:latest"]:::step
+    subgraph P3 ["Phase 3: Provision & Deploy"]
+        direction TB
+        D1["7. terraform apply -auto-approve"]
+        D2["8. Cloud-Init User Data<br>Install Docker & Pull Images"]
+        D3["9. Auto-Run 5 Containers<br>Ports: 80, 3000-3004"]
+        D1 --> D2 --> D3
+    end
 
-    Step5 --> Step6["Step 6: Write Terraform Infrastructure Code<br>• Custom VPC & Public Subnet<br>• Internet Gateway & Route Table<br>• Security Groups (Ports 80, 3000-3004, 22)<br>• EC2 Instance with Cloud-Init User Data"]:::step
+    P3 --> P4
 
-    Step6 --> Step7["Step 7: Initialize & Validate Terraform<br>• terraform init<br>• terraform validate<br>• terraform plan"]:::step
+    subgraph P4 ["Phase 4: Verify & Document"]
+        direction TB
+        E1["10. Probing & Verification<br>Browser 'Frontend is Live' & curls"]
+        E2["11. Evidence Screenshots<br>12 Verifiable Evidence Captures"]
+        E3["12. Generate PDF & README<br>Clean PDF & GitHub Sync"]
+        E1 --> E2 --> E3
+    end
 
-    Step7 --> Step8["Step 8: Execute Infrastructure Provisioning<br>• terraform apply -auto-approve"]:::step
-
-    Step8 --> Check2{"Terraform apply<br>successful?"}:::check
-    Check2 -- No --> Fix2["Inspect AWS Credentials / Quotas / Permissions"]:::action
-    Fix2 --> Step8
-    Check2 -- Yes --> Step9["Step 9: Cloud-Init Execution on EC2<br>• Docker Engine & Compose auto-installed<br>• Images pulled from Docker Hub<br>• Containers launched on respective ports"]:::step
-
-    Step9 --> Step10["Step 10: Live Testing & Accessibility Verification<br>• Frontend Homepage: http://<EC2-IP>:80 & :3000<br>• User Service: http://<EC2-IP>:3001/ & /health<br>• Product Service: http://<EC2-IP>:3002/ & /health<br>• Cart Service: http://<EC2-IP>:3003/ & /health<br>• Order Service: http://<EC2-IP>:3004/ & /health"]:::step
-
-    Step10 --> Step11["Step 11: Capture Verifiable Screenshots<br>• Docker builds & Docker Hub repository<br>• Terraform plan & apply output<br>• AWS Console (VPC, Subnet, SG, EC2)<br>• Browser showing 'Frontend is Live'<br>• curl responses for all backend APIs"]:::step
-
-    Step11 --> Step12["Step 12: Generate In-Depth Documentation & PDF<br>• Update README.md with Mermaid diagrams<br>• Run generate_html.py & export PDF<br>• Assemble submission bundle"]:::step
-
-    Step12 --> Done(["Assignment Complete & Ready for Evaluation"]):::success
+    P4 --> Done(["Assessment Complete (50/50)"]):::success
 ```
 
 ---

@@ -1,61 +1,67 @@
 # 🚀 Multi-Service E-Commerce Deployment Flowchart
 
-This document details the complete end-to-end deployment workflow for containerizing the microservices, pushing to Docker Hub, provisioning cloud infrastructure via Terraform, and verifying live services.
+This document details the deployment workflow for containerizing the microservices, pushing to Docker Hub, provisioning cloud infrastructure via Terraform, and verifying live services.
 
 ---
 
 ## Deployment Flowchart (Mermaid)
 
 ```mermaid
-flowchart TD
+flowchart LR
     %% ─── Styling Classes ────────────────────────────────────────────
     classDef startend fill:#e1f5fe,stroke:#0288d1,stroke-width:2px,color:#000
-    classDef step     fill:#ffffff,stroke:#3f51b5,stroke-width:2px,color:#000
-    classDef action   fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,color:#000
     classDef check    fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000
     classDef success  fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#000
 
-    %% ─── Workflow Steps ─────────────────────────────────────────────
-    Start(["Start Assignment"]):::startend --> Step1["Step 1: Clone Repository & Review Multi-Service Architecture"]:::step
+    Start(["Start"]):::startend --> P1
+    
+    subgraph P1 ["Phase 1: App Setup & Dockerization"]
+        direction TB
+        A1["1. Clone Repo & Add Endpoints<br>GET / & GET /health"]
+        A2["2. Create 5 Dockerfiles<br>Frontend + 4 Microservices"]
+        A3["3. Local Docker Build & Test<br>docker compose up -d"]
+        A1 --> A2 --> A3
+    end
 
-    Step1 --> Step2["Step 2: Create Dockerfiles for All 5 Services<br>• frontend (Port 80/3000)<br>• user-service (Port 3001)<br>• product-service (Port 3002)<br>• cart-service (Port 3003)<br>• order-service (Port 3004)"]:::step
+    P1 --> C1{"Local Test<br>Passed?"}:::check
+    C1 -- Yes --> P2
 
-    Step2 --> Step3["Step 3: Implement Sample Endpoints & Healthchecks<br>• GET / -> 'Service Running'<br>• GET /health -> Status JSON"]:::step
+    subgraph P2 ["Phase 2: Registry & IaC"]
+        direction TB
+        B1["4. Tag & Push to Docker Hub<br>kaushalpatil205/*"]
+        B2["5. Write Terraform Manifests<br>VPC, Subnet, IGW, SG, EC2"]
+        B3["6. Validate & Preview Plan<br>terraform init & plan"]
+        B1 --> B2 --> B3
+    end
 
-    Step3 --> Step4["Step 4: Local Docker Build & Verification<br>• docker build -t image:tag<br>• docker run / docker-compose up -d"]:::step
+    P2 --> P3
 
-    Step4 --> Check1{"Are all 5 services<br>running locally?"}:::check
-    Check1 -- No --> Fix1["Debug Container Logs<br>docker logs <container>"]:::action
-    Fix1 --> Step4
-    Check1 -- Yes --> Step5["Step 5: Tag & Push Images to Docker Hub<br>• docker tag image kaushalpatil205/image:latest<br>• docker push kaushalpatil205/image:latest"]:::step
+    subgraph P3 ["Phase 3: Provision & Deploy"]
+        direction TB
+        D1["7. terraform apply -auto-approve"]
+        D2["8. Cloud-Init User Data<br>Install Docker & Pull Images"]
+        D3["9. Auto-Run 5 Containers<br>Ports: 80, 3000-3004"]
+        D1 --> D2 --> D3
+    end
 
-    Step5 --> Step6["Step 6: Write Terraform Infrastructure Code<br>• Custom VPC & Public Subnet<br>• Internet Gateway & Route Table<br>• Security Groups (Ports 80, 3000-3004, 22)<br>• EC2 Instance with Cloud-Init User Data"]:::step
+    P3 --> P4
 
-    Step6 --> Step7["Step 7: Initialize & Validate Terraform<br>• terraform init<br>• terraform validate<br>• terraform plan"]:::step
+    subgraph P4 ["Phase 4: Verify & Document"]
+        direction TB
+        E1["10. Probing & Verification<br>Browser 'Frontend is Live' & curls"]
+        E2["11. Evidence Screenshots<br>12 Verifiable Evidence Captures"]
+        E3["12. Generate PDF & README<br>Clean PDF & GitHub Sync"]
+        E1 --> E2 --> E3
+    end
 
-    Step7 --> Step8["Step 8: Execute Infrastructure Provisioning<br>• terraform apply -auto-approve"]:::step
-
-    Step8 --> Check2{"Terraform apply<br>successful?"}:::check
-    Check2 -- No --> Fix2["Inspect AWS Credentials / Quotas / Permissions"]:::action
-    Fix2 --> Step8
-    Check2 -- Yes --> Step9["Step 9: Cloud-Init Execution on EC2<br>• Docker Engine & Compose auto-installed<br>• Images pulled from Docker Hub<br>• Containers launched on respective ports"]:::step
-
-    Step9 --> Step10["Step 10: Live Testing & Accessibility Verification<br>• Frontend Homepage: http://<EC2-IP>:80 & :3000<br>• User Service: http://<EC2-IP>:3001/ & /health<br>• Product Service: http://<EC2-IP>:3002/ & /health<br>• Cart Service: http://<EC2-IP>:3003/ & /health<br>• Order Service: http://<EC2-IP>:3004/ & /health"]:::step
-
-    Step10 --> Step11["Step 11: Capture Verifiable Screenshots<br>• Docker builds & Docker Hub repository<br>• Terraform plan & apply output<br>• AWS Console (VPC, Subnet, SG, EC2)<br>• Browser showing 'Frontend is Live'<br>• curl responses for all backend APIs"]:::step
-
-    Step11 --> Step12["Step 12: Generate In-Depth Documentation & PDF<br>• Update README.md with Mermaid diagrams<br>• Run generate_html.py & export PDF<br>• Assemble submission bundle"]:::step
-
-    Step12 --> Done(["Assignment Complete & Ready for Evaluation"]):::success
+    P4 --> Done(["Assessment Complete (50/50)"]):::success
 ```
 
 ---
 
 ## 📋 Deployment Stages Breakdown
 
-1. **Source & Code Architecture**: 4 independent Node.js backend microservices and 1 React frontend.
-2. **Containerization**: Optimized Dockerfiles with production builds and lightweight Alpine bases.
-3. **Registry Distribution**: Images pushed to Docker Hub with public accessibility for cloud deployment.
-4. **Infrastructure as Code (IaC)**: Fully automated AWS resource orchestration with zero manual console clicking required.
-5. **Automated Provisioning**: Cloud-init script automatically bootstraps Docker and container instances upon EC2 boot.
-6. **Validation**: Comprehensive multi-port HTTP probing to confirm both frontend UI and microservice APIs are responding.
+1. **Phase 1: Source & Containerization**: Add root sample endpoints (`GET /`) and `/health` checks across all 4 Node.js backend microservices and React frontend. Build and verify all Docker containers locally.
+2. **Phase 2: Registry Distribution & IaC**: Tag all 5 images under `kaushalpatil205` and publish to Docker Hub. Author modular Terraform configurations (`main.tf`, `variables.tf`, `outputs.tf`).
+3. **Phase 3: Automated Cloud Orchestration**: Execute `terraform apply` to provision VPC, Subnet, Security Group, and EC2 with automated cloud-init bootstrap pulling and running containers.
+4. **Phase 4: Probing & Documentation**: Verify live browser UI on port 80/3000 ("Frontend is Live"), probe all backend service ports, generate clean documentation and PDF.
